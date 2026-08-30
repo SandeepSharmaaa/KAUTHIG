@@ -1,0 +1,11 @@
+{
+  "name": "kauthig",
+  "version": "1.0.0",
+  "description": "Event management platform with role-based access control, session capacity management, registration lifecycle tracking, and staff check-in workflows.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sandeep Sharma",
+  "license": "ISC"
+}
