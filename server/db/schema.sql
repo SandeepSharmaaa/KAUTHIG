@@ -150,3 +150,4 @@ CREATE TABLE capacity_alerts (
 -- End of schema.sql
 -- ============================================================
 
+show tables;
