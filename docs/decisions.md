@@ -19,9 +19,9 @@ below, not necessarily the last one; add a **Later reversed:** line to whichever
 
 ## Decision 3
 
-- **Chose:**
-- **Rejected:**
-- **Why:**
+- **Chose:** Custom error classes (NotFoundError, ForbiddenError, etc.) that extend a base AppError, each carrying its own HTTP status code.
+- **Rejected:** Throwing plain Error objects and having each route/controller manually decide what status code to send back.
+- **Why:** With typed errors, any route can just `throw new NotFoundError(...)` and the global error handler automatically knows to respond with 404 — no repeated status-code logic scattered across every route. Verified this live by throwing a test NotFoundError and confirming the response came back with the right message and status without any manual res.status() call.
 
 ## Decision 4
 
