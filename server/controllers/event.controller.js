@@ -37,9 +37,9 @@ async function update(req, res) {
 }
 
 async function archive(req, res) {
-    const { isArchived } = req.body;
-    const event = await eventService.setArchiveStatus(req.params.id, isArchived);
-    res.json({ event });
+    const event = await eventService.getEventById(req.params.id);
+    const updated = await eventService.setArchiveStatus(req.params.id, !event.is_archived);
+    res.json({ event: updated });
 }
 
 module.exports = {
