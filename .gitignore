@@ -2,3 +2,5 @@ node_modules/
 .env
 .DS_Store
 cookies.txt
+test-event.json
+test-login.json
