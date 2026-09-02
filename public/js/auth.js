@@ -1,3 +1,7 @@
+// ============================================================
+// auth.js — Authentication state management
+// ============================================================
+
 let currentUser = null;
 
 async function checkAuth() {

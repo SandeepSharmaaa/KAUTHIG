@@ -1,17 +1,29 @@
+// ============================================================
+// events.js — Events list page with archive toggle
+// ============================================================
+
+let showArchived = false;
+
 async function renderEventsPage() {
     const app = document.getElementById('app');
-    app.innerHTML = '<div class="empty-state">Loading events...</div>';
+    app.innerHTML = '<div class="loading-spinner"></div>';
 
     try {
-        const data = await api.get('/events');
+        const queryParam = showArchived ? '?includeArchived=true' : '';
+        const data = await api.get('/events' + queryParam);
         const events = data.events;
-
         const canCreate = currentUser.role === 'organizer';
 
         app.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div class="page-header">
                 <h2>Events</h2>
-                ${canCreate ? '<button class="primary" onclick="openCreateEventModal()">+ New Event</button>' : ''}
+                <div class="flex gap-1">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="archive-toggle" ${showArchived ? 'checked' : ''} onchange="toggleArchiveFilter()" />
+                        Show Archived
+                    </label>
+                    ${canCreate ? '<button class="btn-primary" onclick="openCreateEventModal()">+ New Event</button>' : ''}
+                </div>
             </div>
             <div id="events-list"></div>
         `;
@@ -19,39 +31,57 @@ async function renderEventsPage() {
         const listEl = document.getElementById('events-list');
 
         if (events.length === 0) {
-            listEl.innerHTML = '<div class="empty-state">No events yet.</div>';
+            listEl.innerHTML = '<div class="empty-state">📅 No events found.</div>';
             return;
         }
 
         listEl.innerHTML = events.map((ev) => `
-            <div class="card" onclick="window.location.hash='#/events/${ev.id}'" style="cursor:pointer;">
-                <h3>${ev.name}</h3>
-                <div class="meta">${ev.start_date} to ${ev.end_date} — ${ev.venue}</div>
-                <div class="meta">${ev.is_archived ? 'Archived' : 'Active'}</div>
+            <div class="card card-hover" onclick="window.location.hash='#/events/${ev.id}'" style="cursor:pointer;">
+                <div class="flex-between">
+                    <h3>${escapeHtml(ev.name)}</h3>
+                    ${ev.is_archived ? '<span class="status-badge status-cancelled">Archived</span>' : '<span class="status-badge status-confirmed">Active</span>'}
+                </div>
+                <div class="meta">📍 ${escapeHtml(ev.venue)}</div>
+                <div class="meta">📆 ${escapeHtml(ev.start_date)} to ${escapeHtml(ev.end_date)}</div>
             </div>
         `).join('');
     } catch (err) {
-        app.innerHTML = `<div class="error-text">${err.message}</div>`;
+        app.innerHTML = `<div class="error-text">${escapeHtml(err.message)}</div>`;
     }
+}
+
+function toggleArchiveFilter() {
+    showArchived = document.getElementById('archive-toggle').checked;
+    renderEventsPage();
 }
 
 function openCreateEventModal() {
     openModal(`
         <h3>New Event</h3>
         <div id="event-form-error" class="error-text"></div>
-        <label>Name</label>
-        <input id="ev-name" />
-        <label>Description</label>
-        <textarea id="ev-desc" rows="3"></textarea>
-        <label>Start Date</label>
-        <input id="ev-start" type="date" />
-        <label>End Date</label>
-        <input id="ev-end" type="date" />
-        <label>Venue</label>
-        <input id="ev-venue" />
-        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-            <button class="primary" onclick="submitCreateEvent()">Create</button>
-            <button class="secondary" onclick="closeModal()">Cancel</button>
+        <div class="form-group">
+            <label>Name</label>
+            <input id="ev-name" placeholder="Event name" />
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="ev-desc" rows="3" placeholder="Optional description"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Start Date</label>
+            <input id="ev-start" type="date" />
+        </div>
+        <div class="form-group">
+            <label>End Date</label>
+            <input id="ev-end" type="date" />
+        </div>
+        <div class="form-group">
+            <label>Venue</label>
+            <input id="ev-venue" placeholder="Venue location" />
+        </div>
+        <div class="modal-actions">
+            <button class="btn-primary" onclick="submitCreateEvent()">Create Event</button>
+            <button class="btn-secondary" onclick="closeModal()">Cancel</button>
         </div>
     `);
 }
@@ -69,6 +99,7 @@ async function submitCreateEvent() {
             venue: document.getElementById('ev-venue').value
         });
         closeModal();
+        showToast('Event created successfully');
         renderEventsPage();
     } catch (err) {
         errorEl.textContent = err.message;

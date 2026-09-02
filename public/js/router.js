@@ -1,25 +1,76 @@
+// ============================================================
+// router.js — Hash-based SPA router
+// ============================================================
+
 async function router() {
     const hash = window.location.hash || '#/login';
-    const [, path, param] = hash.split('/');
+    const parts = hash.replace('#/', '').split('/');
+    const path = parts[0];
+    const param = parts[1];
 
+    // Auth guard — skip for login page
     if (path !== 'login') {
         const user = await checkAuth();
         if (!user) {
             window.location.hash = '#/login';
             return;
         }
+        renderNavbar();
+    } else {
+        renderNavbar(); // will hide itself when no user
     }
 
-    renderNavbar();
+    // Route matching
+    switch (path) {
+        case 'login':
+            renderLoginPage();
+            break;
 
-    if (path === 'login') {
-        renderLoginPage();
-    } else if (path === 'events' && !param) {
-        renderEventsPage();
-    } else if (path === 'events' && param) {
-        renderEventDetailPage(param);
-    } else {
-        window.location.hash = '#/events';
+        case 'dashboard':
+            renderDashboardPage();
+            break;
+
+        case 'events':
+            if (param) {
+                renderEventDetailPage(param);
+            } else {
+                renderEventsPage();
+            }
+            break;
+
+        case 'sessions':
+            if (param) {
+                renderSessionDetailPage(param);
+            }
+            break;
+
+        case 'registrations':
+            if (param) {
+                renderRegistrationDetailPage(param);
+            } else {
+                renderRegistrationsPage();
+            }
+            break;
+
+        case 'my-assignments':
+            renderMyAssignmentsPage();
+            break;
+
+        case 'alerts':
+            renderAlertsPage();
+            break;
+
+        case 'staff-management':
+            renderStaffManagementPage();
+            break;
+
+        default:
+            // Default redirect based on role
+            if (currentUser) {
+                window.location.hash = '#/dashboard';
+            } else {
+                window.location.hash = '#/login';
+            }
     }
 }
 

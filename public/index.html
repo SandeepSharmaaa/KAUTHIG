@@ -2,20 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KAUTHIG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAUTHIG — Event Registration System</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div id="navbar"></div>
+    <!-- App Shell -->
+    <nav id="navbar"></nav>
     <main id="app"></main>
 
+    <!-- Core Scripts (order matters — dependencies first) -->
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
+
+    <!-- Components -->
     <script src="js/components/navbar.js"></script>
     <script src="js/components/modal.js"></script>
+    <script src="js/components/table.js"></script>
+    <script src="js/components/pagination.js"></script>
+    <script src="js/components/chart.js"></script>
+
+    <!-- Pages -->
     <script src="js/pages/login.js"></script>
+    <script src="js/pages/dashboard.js"></script>
     <script src="js/pages/events.js"></script>
     <script src="js/pages/event-detail.js"></script>
+    <script src="js/pages/session-detail.js"></script>
+    <script src="js/pages/registrations.js"></script>
+    <script src="js/pages/registration-detail.js"></script>
+    <script src="js/pages/my-assignments.js"></script>
+    <script src="js/pages/alerts.js"></script>
+    <script src="js/pages/staff-management.js"></script>
+
+    <!-- Router (must be last — depends on all pages) -->
     <script src="js/router.js"></script>
 </body>
 </html>
