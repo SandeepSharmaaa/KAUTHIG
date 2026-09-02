@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const cors = require('cors');
 const config = require('./config/env');
 const errorHandler = require('./middleware/errorHandler');
@@ -8,6 +9,7 @@ const eventRoutes = require('./routes/event.routes');
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors({
     origin: config.frontendOrigin,
     credentials: true
