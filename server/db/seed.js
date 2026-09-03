@@ -38,8 +38,9 @@ const pool = require('../config/db');
                 ('Rahul Verma',   'rahul@kauthig.com',  ?, 'organizer'),
                 ('Anita Desai',   'anita@kauthig.com',  ?, 'check_in_staff'),
                 ('Vikram Singh',  'vikram@kauthig.com', ?, 'check_in_staff'),
-                ('Meera Patel',   'meera@kauthig.com',  ?, 'check_in_staff')`,
-            [hash, hash, hash, hash, hash]
+                ('Meera Patel',   'meera@kauthig.com',  ?, 'check_in_staff'),
+                ('Sneha Gupta',   'sneha@kauthig.com',  ?, 'guest')`,
+            [hash, hash, hash, hash, hash, hash]
         );
 
         // Fetch IDs
