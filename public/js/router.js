@@ -8,8 +8,8 @@ async function router() {
     const path = parts[0];
     const param = parts[1];
 
-    // Auth guard — skip for login page
-    if (path !== 'login') {
+    // Auth guard — skip for login and signup pages
+    if (path !== 'login' && path !== 'signup') {
         const user = await checkAuth();
         if (!user) {
             window.location.hash = '#/login';
@@ -24,6 +24,10 @@ async function router() {
     switch (path) {
         case 'login':
             renderLoginPage();
+            break;
+
+        case 'signup':
+            renderSignupPage();
             break;
 
         case 'dashboard':
@@ -52,6 +56,10 @@ async function router() {
             }
             break;
 
+        case 'my-registrations':
+            renderMyRegistrationsPage();
+            break;
+
         case 'my-assignments':
             renderMyAssignmentsPage();
             break;
@@ -65,9 +73,8 @@ async function router() {
             break;
 
         default:
-            // Default redirect based on role
             if (currentUser) {
-                window.location.hash = '#/dashboard';
+                window.location.hash = currentUser.role === 'guest' ? '#/events' : '#/dashboard';
             } else {
                 window.location.hash = '#/login';
             }

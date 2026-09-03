@@ -304,6 +304,41 @@ input:focus, textarea:focus, select:focus {
 .login-header h1 { font-size: 2rem; color: #1e293b; letter-spacing: 2px; }
 .login-footer { text-align: center; }
 
+/* ── Role Selector (Signup) ────────────────────────────────── */
+.role-selector { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+.role-option { flex: 1; cursor: pointer; }
+.role-option input[type="radio"] { display: none; }
+.role-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+.role-option input:checked + .role-card {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 1px #2563eb;
+}
+.role-card:hover { border-color: #93c5fd; }
+.role-icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.role-name { font-weight: 600; font-size: 0.85rem; }
+.role-desc { font-size: 0.7rem; color: #64748b; margin-top: 0.15rem; }
+
+/* ── Guest Banner ──────────────────────────────────────────── */
+.guest-register-btn {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.guest-register-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1024px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); }

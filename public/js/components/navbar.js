@@ -33,22 +33,25 @@ function renderNavbar() {
         return hash.startsWith(path) ? 'nav-link active' : 'nav-link';
     }
 
+    const isGuest = currentUser.role === 'guest';
+
     el.innerHTML = `
         <div class="nav-brand">
-            <a href="#/dashboard" class="brand-link">KAUTHIG</a>
+            <a href="#/events" class="brand-link">🎪 KAUTHIG</a>
         </div>
         <div class="nav-links">
-            <a href="#/dashboard" class="${activeClass('#/dashboard')}">Dashboard</a>
+            ${!isGuest ? `<a href="#/dashboard" class="${activeClass('#/dashboard')}">Dashboard</a>` : ''}
             <a href="#/events" class="${activeClass('#/events')}">Events</a>
-            <a href="#/registrations" class="${activeClass('#/registrations')}">Registrations</a>
+            ${isGuest ? `<a href="#/my-registrations" class="${activeClass('#/my-registrations')}">My Registrations</a>` : ''}
+            ${!isGuest ? `<a href="#/registrations" class="${activeClass('#/registrations')}">Registrations</a>` : ''}
             ${isOrganizer ? `<a href="#/staff-management" class="${activeClass('#/staff-management')}">Staff</a>` : ''}
             ${isStaff ? `<a href="#/my-assignments" class="${activeClass('#/my-assignments')}">My Assignments</a>` : ''}
-            <a href="#/alerts" class="${activeClass('#/alerts')}">
+            ${!isGuest ? `<a href="#/alerts" class="${activeClass('#/alerts')}">
                 Alerts${alertCount > 0 ? `<span class="alert-badge">${alertCount}</span>` : ''}
-            </a>
+            </a>` : ''}
         </div>
         <div class="nav-user">
-            <span class="nav-user-info">${escapeHtml(currentUser.name)} <span class="nav-role">${escapeHtml(currentUser.role.replace('_', ' '))}</span></span>
+            <span class="nav-user-info">${escapeHtml(currentUser.name)} <span class="nav-role">${escapeHtml(currentUser.role.replace(/_/g, ' '))}</span></span>
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
     `;

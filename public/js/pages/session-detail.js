@@ -116,20 +116,37 @@ async function renderSessionDetailPage(sessionId) {
 
             ${staffHtml}
 
-            <div class="card" style="margin-top:1.5rem;">
-                <div class="flex-between">
-                    <h3>Registrations</h3>
-                    <div class="flex gap-1">
-                        <button class="btn-primary btn-sm" onclick="openNewRegModal(${sessionId})">+ Register</button>
-                        <label class="btn-secondary btn-sm" style="cursor:pointer;display:inline-block;padding:0.3rem 0.8rem;">
-                            📥 Import CSV <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCsvImport(${sessionId}, this)" />
-                        </label>
-                        <a href="/api/sessions/${sessionId}/registrations/export" target="_blank" class="btn-secondary btn-sm" style="text-decoration:none;display:inline-block;padding:0.3rem 0.8rem;">📤 Export CSV</a>
-                    </div>
+            ${currentUser.role === 'guest' ? `
+                <div class="card" style="margin-top:1.5rem;text-align:center;padding:2rem;">
+                    ${occupied >= capacity ? `
+                        <div style="font-size:2.5rem;">😔</div>
+                        <h3 style="margin-top:0.5rem;">Session is Full</h3>
+                        <p class="text-muted">All ${capacity} seats are taken. Check back later if spots open up.</p>
+                    ` : `
+                        <div style="font-size:2.5rem;">🎫</div>
+                        <h3 style="margin-top:0.5rem;">Want to attend this session?</h3>
+                        <p class="text-muted" style="margin-bottom:1rem;">${capacity - occupied} seats remaining</p>
+                        <button class="guest-register-btn" onclick="guestSelfRegister(${sessionId})">
+                            Register for this Session
+                        </button>
+                    `}
                 </div>
-                <div id="import-results"></div>
-                <div style="margin-top:1rem;">${regsHtml}</div>
-            </div>
+            ` : `
+                <div class="card" style="margin-top:1.5rem;">
+                    <div class="flex-between">
+                        <h3>Registrations</h3>
+                        <div class="flex gap-1">
+                            <button class="btn-primary btn-sm" onclick="openNewRegModal(${sessionId})">+ Register</button>
+                            <label class="btn-secondary btn-sm" style="cursor:pointer;display:inline-block;padding:0.3rem 0.8rem;">
+                                📥 Import CSV <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCsvImport(${sessionId}, this)" />
+                            </label>
+                            <a href="/api/sessions/${sessionId}/registrations/export" target="_blank" class="btn-secondary btn-sm" style="text-decoration:none;display:inline-block;padding:0.3rem 0.8rem;">📤 Export CSV</a>
+                        </div>
+                    </div>
+                    <div id="import-results"></div>
+                    <div style="margin-top:1rem;">${regsHtml}</div>
+                </div>
+            `}
         `;
     } catch (err) {
         app.innerHTML = `<div class="error-text">${escapeHtml(err.message)}</div>`;
@@ -140,6 +157,19 @@ async function regAction(regId, action, sessionId) {
     try {
         await api.patch(`/registrations/${regId}/${action}`);
         showToast(`Registration ${action}ed successfully`);
+        renderSessionDetailPage(sessionId);
+    } catch (err) {
+        showToast(err.message, 'error');
+    }
+}
+
+async function guestSelfRegister(sessionId) {
+    try {
+        await api.post(`/sessions/${sessionId}/registrations`, {
+            attendeeName: currentUser.name,
+            attendeeEmail: currentUser.email
+        });
+        showToast('Registration submitted! The organizer will review it.');
         renderSessionDetailPage(sessionId);
     } catch (err) {
         showToast(err.message, 'error');
