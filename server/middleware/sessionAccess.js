@@ -12,6 +12,11 @@ module.exports = async function sessionAccess(req, res, next) {
             return next();
         }
 
+        // Guests can view sessions and create registrations
+        if (req.user.role === 'guest') {
+            return next();
+        }
+
         if (req.user.role !== 'check_in_staff') {
             throw new ForbiddenError('Access denied');
         }

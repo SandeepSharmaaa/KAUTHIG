@@ -48,6 +48,13 @@ registrationRouter.get('/',
     authenticate,
     registrationController.list
 );
+
+// Guest: get my own registrations (must be before /:id)
+registrationRouter.get('/my',
+    authenticate,
+    registrationController.myRegistrations
+);
+
 registrationRouter.get('/:id',
     authenticate, checkSessionAccess,
     registrationController.getOne

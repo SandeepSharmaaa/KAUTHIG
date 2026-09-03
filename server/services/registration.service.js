@@ -361,6 +361,20 @@ async function addNote(id, note, performedBy) {
     return entry[0];
 }
 
+// ── Get guest's own registrations by email ─────────────────
+async function getMyRegistrations(email) {
+    const [rows] = await pool.query(
+        `SELECT r.*, s.title AS session_title, s.capacity, e.name AS event_name
+         FROM registrations r
+         JOIN sessions s ON r.session_id = s.id
+         JOIN events e ON s.event_id = e.id
+         WHERE r.attendee_email = ?
+         ORDER BY r.reserved_at DESC`,
+        [email]
+    );
+    return rows;
+}
+
 module.exports = {
     getActiveCount,
     createRegistration,
@@ -369,5 +383,6 @@ module.exports = {
     checkInRegistration,
     getRegistrationById,
     listRegistrations,
-    addNote
+    addNote,
+    getMyRegistrations
 };

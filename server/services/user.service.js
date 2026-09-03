@@ -41,7 +41,7 @@ async function createUser({ name, email, password, role }) {
     }
 
     // Validate role
-    const validRoles = ['organizer', 'check_in_staff'];
+    const validRoles = ['organizer', 'check_in_staff', 'guest'];
     if (!validRoles.includes(role)) {
         throw new ValidationError('Role must be organizer or check_in_staff');
     }

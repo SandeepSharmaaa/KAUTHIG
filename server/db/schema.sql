@@ -18,7 +18,7 @@ CREATE TABLE users (
     email           VARCHAR(255) NOT NULL,
     password_hash   VARCHAR(255) NOT NULL,
     name            VARCHAR(255) NOT NULL,
-    role            ENUM('organizer', 'check_in_staff') NOT NULL,
+    role            ENUM('organizer', 'check_in_staff', 'guest') NOT NULL,
     created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                         ON UPDATE CURRENT_TIMESTAMP,

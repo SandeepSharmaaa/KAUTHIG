@@ -73,4 +73,9 @@ async function exportCsv(req, res) {
     res.send(csv);
 }
 
-module.exports = { create, list, getOne, confirm, cancel, checkIn, addNote, importCsv, exportCsv };
+async function myRegistrations(req, res) {
+    const registrations = await registrationService.getMyRegistrations(req.user.email);
+    res.json({ registrations });
+}
+
+module.exports = { create, list, getOne, confirm, cancel, checkIn, addNote, importCsv, exportCsv, myRegistrations };

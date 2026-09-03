@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const config = require('../config/env');
-const { UnauthorizedError } = require('../utils/errors');
+const { UnauthorizedError, ValidationError } = require('../utils/errors');
 
 const SALT_ROUNDS = 12;
 
@@ -52,10 +52,35 @@ async function login(email, password) {
     };
 }
 
+async function signup({ name, email, password, role }) {
+    const validRoles = ['organizer', 'check_in_staff', 'guest'];
+    if (!validRoles.includes(role)) {
+        throw new ValidationError('Invalid role');
+    }
+
+    const existing = await findUserByEmail(email);
+    if (existing) {
+        throw new ValidationError('Email already registered');
+    }
+
+    const passwordHash = await hashPassword(password);
+    const [result] = await pool.query(
+        'INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)',
+        [name, email, passwordHash, role]
+    );
+
+    const token = generateToken(result.insertId);
+    return {
+        token,
+        user: { id: result.insertId, email, name, role }
+    };
+}
+
 module.exports = {
     findUserByEmail,
     hashPassword,
     verifyPassword,
     generateToken,
-    login
+    login,
+    signup
 };

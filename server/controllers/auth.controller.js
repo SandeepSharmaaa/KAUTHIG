@@ -24,8 +24,23 @@ async function me(req, res) {
     res.json({ user: req.user });
 }
 
+async function signup(req, res) {
+    const { name, email, password, role } = req.body;
+    const { token, user } = await authService.signup({ name, email, password, role });
+
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000
+    });
+
+    res.status(201).json({ user });
+}
+
 module.exports = {
     login,
     logout,
-    me
+    me,
+    signup
 };
