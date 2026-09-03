@@ -5,7 +5,7 @@ Fill this in and commit it. This is the first file we open.
 ## Links
 
 - **GitHub repository:** https://github.com/SandeepSharmaaa/KAUTHIG
-- **Live application:** *(to be added after deployment)*
+- **Live application:** *https://kauthig.onrender.com/*
 
 ## Notes for the reviewer
 
